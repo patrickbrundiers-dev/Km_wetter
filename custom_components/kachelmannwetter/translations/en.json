@@ -1,0 +1,77 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up Kachelmannwetter",
+        "description": "API key from your account under “Manage API keys”. The coordinates must match a location configured under “Manage API locations”.",
+        "data": {
+          "api_key": "API-Key",
+          "name": "Name",
+          "latitude": "Latitude",
+          "longitude": "Longitude"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Renew API key",
+        "description": "The API key was rejected. Please enter a valid key.",
+        "data": {
+          "api_key": "API-Key"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid API key.",
+      "forbidden": "These coordinates are not configured as an API location in your account.",
+      "rate_limit": "Daily API limit reached. Please try again later.",
+      "cannot_connect": "Could not connect to the Kachelmann API."
+    },
+    "abort": {
+      "already_configured": "This location is already configured.",
+      "reauth_successful": "API key updated."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Kachelmannwetter options",
+        "data": {
+          "update_interval": "Update interval (minutes)"
+        },
+        "data_description": {
+          "update_interval": "Hobby plan: max. 700 requests/day. At 15 minutes about 200 are used per location."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "dew_point": {
+        "name": "Dew point"
+      },
+      "wind_gust": {
+        "name": "Wind gust"
+      },
+      "cloud_coverage": {
+        "name": "Cloud coverage"
+      },
+      "precipitation_1h": {
+        "name": "Precipitation 1 h"
+      },
+      "snow_height": {
+        "name": "Snow height"
+      },
+      "precipitation_next_3h": {
+        "name": "Precipitation next 3 h"
+      },
+      "precipitation_next_24h": {
+        "name": "Precipitation next 24 h"
+      },
+      "next_rain": {
+        "name": "Next rain"
+      },
+      "precipitation_probability_today": {
+        "name": "Rain probability today"
+      }
+    }
+  }
+}

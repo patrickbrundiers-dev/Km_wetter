@@ -1,0 +1,77 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Kachelmannwetter einrichten",
+        "description": "API-Key aus dem Konto unter „API-Keys verwalten“. Die Koordinaten müssen zu einem unter „API-Standorte verwalten“ hinterlegten Standort passen.",
+        "data": {
+          "api_key": "API-Key",
+          "name": "Name",
+          "latitude": "Breitengrad",
+          "longitude": "Längengrad"
+        }
+      },
+      "reauth_confirm": {
+        "title": "API-Key erneuern",
+        "description": "Der API-Key wurde abgelehnt. Bitte einen gültigen Key eingeben.",
+        "data": {
+          "api_key": "API-Key"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Ungültiger API-Key.",
+      "forbidden": "Diese Koordinaten sind nicht als API-Standort in deinem Konto hinterlegt.",
+      "rate_limit": "Tageslimit der API erreicht. Bitte später erneut versuchen.",
+      "cannot_connect": "Verbindung zur Kachelmann-API fehlgeschlagen."
+    },
+    "abort": {
+      "already_configured": "Dieser Standort ist bereits eingerichtet.",
+      "reauth_successful": "API-Key wurde aktualisiert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Kachelmannwetter Optionen",
+        "data": {
+          "update_interval": "Update-Intervall (Minuten)"
+        },
+        "data_description": {
+          "update_interval": "Hobby-Tarif: max. 700 Requests/Tag. Bei 15 Minuten werden ca. 200 pro Standort genutzt."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "dew_point": {
+        "name": "Taupunkt"
+      },
+      "wind_gust": {
+        "name": "Windböen"
+      },
+      "cloud_coverage": {
+        "name": "Bewölkung"
+      },
+      "precipitation_1h": {
+        "name": "Niederschlag 1 h"
+      },
+      "snow_height": {
+        "name": "Schneehöhe"
+      },
+      "precipitation_next_3h": {
+        "name": "Niederschlag nächste 3 h"
+      },
+      "precipitation_next_24h": {
+        "name": "Niederschlag nächste 24 h"
+      },
+      "next_rain": {
+        "name": "Nächster Regen"
+      },
+      "precipitation_probability_today": {
+        "name": "Regenwahrscheinlichkeit heute"
+      }
+    }
+  }
+}
