@@ -67,5 +67,11 @@ class KachelmannApi:
     async def async_get_hourly(self, lat: float, lon: float) -> dict[str, Any]:
         return await self._get(f"/forecast/{lat}/{lon}/advanced/1h")
 
+    async def async_get_interval(
+        self, lat: float, lon: float, interval: str
+    ) -> dict[str, Any]:
+        """Erweiterte Vorhersage im 3h- oder 6h-Raster (interval: '3h' | '6h')."""
+        return await self._get(f"/forecast/{lat}/{lon}/advanced/{interval}")
+
     async def async_get_trend(self, lat: float, lon: float) -> dict[str, Any]:
         return await self._get(f"/forecast/{lat}/{lon}/trend14days")

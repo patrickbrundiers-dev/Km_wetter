@@ -17,7 +17,7 @@ from .api import (
     KachelmannForbiddenError,
     KachelmannRateLimitError,
 )
-from .const import DOMAIN, TREND_REFRESH
+from .const import DOMAIN, EXT_REFRESH, TREND_REFRESH
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -66,6 +66,8 @@ class KachelmannCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self.lon = lon
         self._trend: list[dict[str, Any]] = []
         self._trend_fetched: datetime | None = None
+        self._ext: dict[str, list[dict[str, Any]]] = {}
+        self._ext_fetched: datetime | None = None
 
     async def _async_update_data(self) -> dict[str, Any]:
         try:
@@ -83,6 +85,19 @@ class KachelmannCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 except KachelmannError as err:
                     # Trend ist optional - alte Daten behalten
                     _LOGGER.debug("Trend konnte nicht geladen werden: %s", err)
+            if self._ext_fetched is None or now - self._ext_fetched > EXT_REFRESH:
+                for interval in ("3h", "6h"):
+                    try:
+                        raw = await self.api.async_get_interval(
+                            self.lat, self.lon, interval
+                        )
+                        self._ext[interval] = _as_list(raw.get("data"))
+                    except KachelmannRateLimitError:
+                        raise
+                    except KachelmannError as err:
+                        # Optional - alte Daten behalten
+                        _LOGGER.debug("%s-Vorhersage nicht geladen: %s", interval, err)
+                self._ext_fetched = now
         except KachelmannAuthError as err:
             raise ConfigEntryAuthFailed(str(err)) from err
         except KachelmannForbiddenError as err:
@@ -95,9 +110,27 @@ class KachelmannCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         except KachelmannError as err:
             raise UpdateFailed(str(err)) from err
 
+        hourly = _as_list(hourly_raw.get("data"))
         return {
             "current": _flatten_current(current_raw.get("data")),
-            "hourly": _as_list(hourly_raw.get("data")),
+            "hourly": hourly,
+            "extended": self._merge_extended(hourly),
             "daily": self._trend,
             "alt": current_raw.get("alt"),
         }
+
+    def _merge_extended(self, hourly: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """1h-Werte, danach 3h-Raster, danach 6h-Raster (jeweils nur Späteres)."""
+        out = list(hourly)
+        for interval, hours in (("3h", 3), ("6h", 6)):
+            last = max(
+                (dt_util.parse_datetime(str(i.get("dateTime", ""))) for i in out),
+                default=None,
+                key=lambda d: d.timestamp() if d else 0,
+            )
+            for item in self._ext.get(interval, []):
+                ts = dt_util.parse_datetime(str(item.get("dateTime", "")))
+                if ts is None or (last is not None and ts <= last):
+                    continue
+                out.append({**item, "_step": hours})
+        return out

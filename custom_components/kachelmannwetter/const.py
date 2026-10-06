@@ -18,6 +18,9 @@ DEFAULT_UPDATE_INTERVAL = 15  # Minuten
 MIN_UPDATE_INTERVAL = 5
 MAX_UPDATE_INTERVAL = 120
 TREND_REFRESH = timedelta(hours=3)
+# Erweiterte Vorhersage (3h- und 6h-Raster) für die Tage nach den ersten 24 Stunden.
+# 2 zusätzliche Requests alle EXT_REFRESH (= 16 pro Tag).
+EXT_REFRESH = timedelta(hours=3)
 
 # Kachelmann weatherSymbol -> Home-Assistant-Zustand
 SYMBOL_TO_CONDITION: dict[str, str] = {

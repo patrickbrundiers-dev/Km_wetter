@@ -162,7 +162,9 @@ class KachelmannWeather(SingleCoordinatorWeatherEntity[KachelmannCoordinator]):
         )
 
     def _async_forecast_hourly(self) -> list[Forecast] | None:
-        hourly = self.coordinator.data.get("hourly", [])
+        hourly = self.coordinator.data.get("extended") or self.coordinator.data.get(
+            "hourly", []
+        )
         return [self._hourly_item(i) for i in hourly if "dateTime" in i] or None
 
     def _async_forecast_daily(self) -> list[Forecast] | None:
